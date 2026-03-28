@@ -300,6 +300,19 @@ Create `success.html` in the repo root:
 
 ---
 
+## Looking up a booking in Stripe
+
+Every booking confirmation page shows a 10-digit numeric reference (e.g. `0001234567`). This is derived from the underlying Stripe Checkout session ID. To find a booking:
+
+1. Go to [Stripe Dashboard → Payments](https://dashboard.stripe.com/payments)
+2. Use the search bar — search by **customer email**, **amount**, or **date** to find the payment
+3. Click the payment — the full session ID is shown under **Payment details → Checkout session**
+4. Alternatively, go to **Developers → Logs** and search by the session ID directly
+
+The numeric ref is for the customer's convenience. The Stripe session ID (starting `cs_live_...`) is the authoritative record — it contains all booking metadata (route, date, dimensions, amount).
+
+---
+
 ## Customisation reference
 
 | Setting | File | Key |

@@ -48,11 +48,20 @@
     <div class="actions">
       <button class="btn-print" onclick="window.print()">🖨 Print confirmation</button>
     </div>
-    <p style="margin-top:1.5rem"><a href="/">← Back to home</a></p>
+    <p style="margin-top:1.5rem"><a href="./">← Back to home</a></p>
   </div>
   <script>
     const session = new URLSearchParams(window.location.search).get('session');
-    if (session) document.getElementById('ref').textContent = session;
+    if (session) {
+      // Derive a short 10-digit numeric reference from the session ID.
+      // Deterministic — the same session always produces the same ref.
+      const id = session.replace(/^cs_(test|live)_/, '');
+      let n = 0;
+      for (let i = 0; i < id.length; i++) {
+        n = (n * 31 + id.charCodeAt(i)) % 1e10;
+      }
+      document.getElementById('ref').textContent = String(Math.floor(n)).padStart(10, '0');
+    }
   </script>
 </body>
 </html>
