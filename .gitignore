@@ -1,0 +1,27 @@
+# ── AI assistant context ──────────────────────────────────────────────────────
+# Internal notes for Claude — not part of the public site.
+CLAUDE.md
+.claude/
+
+# ── Setup script artefacts ────────────────────────────────────────────────────
+# Backup files created by setup.sh's sed command.
+*.bak
+
+# ── Supabase local state ──────────────────────────────────────────────────────
+# Created after `supabase link` — contains your project-ref binding.
+# The project ref is not a secret but there is no reason to commit it.
+supabase/.temp/
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+# Should never be needed (secrets live in Supabase), but belt-and-braces.
+.env
+.env.local
+.env.*.local
+
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+
+# ── OS files ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

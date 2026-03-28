@@ -1,0 +1,39 @@
+# Deploys the Supabase edge function whenever its code changes on main.
+# GitHub Pages deployment is handled separately by GitHub (Settings → Pages).
+#
+# Required GitHub repository secrets (Settings → Secrets → Actions):
+#   SUPABASE_ACCESS_TOKEN  — from https://supabase.com/dashboard/account/tokens
+#   SUPABASE_PROJECT_REF   — the ref shown in your Supabase project URL
+#
+# Stripe secret key is NOT stored in GitHub — it is set once via setup.sh and
+# lives only inside Supabase's encrypted secret store.
+
+name: Deploy edge function
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Only runs when the function code actually changes — not on every commit.
+      - "supabase/functions/**"
+
+jobs:
+  deploy:
+    name: Deploy to Supabase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy create-checkout function
+        run: |
+          supabase functions deploy create-checkout \
+            --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

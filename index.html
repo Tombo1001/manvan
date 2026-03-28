@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekend Courier — Man & Van</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f172a;
+      --navy-mid: #1e293b;
+      --gold: #f59e0b;
+      --gold-dark: #d97706;
+      --white: #ffffff;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-400: #94a3b8;
+      --gray-600: #475569;
+      --green: #10b981;
+      --red: #ef4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; color: var(--white); letter-spacing: -0.02em; }
+    .nav-logo span { color: var(--gold); }
+    .nav-phone { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+    .nav-phone:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      /* Replace 'hero.jpg' with your own photo, or remove background-image to use the gradient */
+      background-image: url('hero.jpg');
+      background-color: #0f1f3d;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 6rem 2rem 3rem;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(15,40,80,0.75) 100%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .hero-text { padding-top: 2rem; }
+    .hero-text h1 {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .hero-text h1 span { color: var(--gold); }
+    .hero-text p { color: rgba(255,255,255,0.72); font-size: 1.05rem; line-height: 1.65; max-width: 420px; }
+    .hero-badges { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .badge {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.9);
+      padding: 0.35rem 0.875rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* ── BOOKING CARD ── */
+    .booking-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    .booking-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .booking-card .subtitle { font-size: 0.82rem; color: var(--gray-600); margin-bottom: 1.25rem; }
+
+    /* ── CALENDAR ── */
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.875rem; }
+    .cal-nav {
+      background: none;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      width: 30px; height: 30px;
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .cal-nav:hover { background: var(--gray-100); }
+    .cal-month-label { font-weight: 600; font-size: 0.9rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-dh { text-align: center; font-size: 0.68rem; font-weight: 600; color: var(--gray-400); padding: 0.2rem 0; text-transform: uppercase; }
+    .cal-day {
+      text-align: center;
+      padding: 0.4rem 0;
+      font-size: 0.83rem;
+      border-radius: 7px;
+      line-height: 1.2;
+    }
+    .cal-day.avail { cursor: pointer; font-weight: 600; color: var(--navy); transition: background 0.12s; }
+    .cal-day.avail:hover { background: var(--gold); color: var(--white); }
+    .cal-day.sel { background: var(--navy); color: var(--white); font-weight: 600; }
+    .cal-day.unavail { color: var(--gray-400); font-size: 0.72rem; }
+    .cal-day.past { color: var(--gray-200); pointer-events: none; }
+    .cal-legend { display: flex; gap: 1rem; margin-top: 0.625rem; }
+    .cal-legend span { font-size: 0.72rem; color: var(--gray-600); display: flex; align-items: center; gap: 0.3rem; }
+    .leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── BOOKING DETAILS ── */
+    .booking-details { display: none; margin-top: 1.25rem; border-top: 1px solid var(--gray-100); padding-top: 1.25rem; }
+    .booking-details.show { display: block; }
+    .date-pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--navy); color: var(--white);
+      padding: 0.35rem 0.875rem; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; margin-bottom: 1.1rem;
+    }
+    .date-pill button { background: none; border: none; color: rgba(255,255,255,0.55); cursor: pointer; font-size: 0.9rem; padding: 0; }
+
+    /* ── FORM ROWS ── */
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+
+    .field label {
+      display: flex; justify-content: space-between;
+      font-size: 0.72rem; font-weight: 600; color: var(--gray-600);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+    .field label .val { font-weight: 700; color: var(--navy); text-transform: none; letter-spacing: 0; font-size: 0.8rem; }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: var(--navy);
+      background: var(--white);
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    input[type="text"]:focus, select:focus { outline: none; border-color: var(--navy); }
+    input[type="text"].ok { border-color: var(--green); }
+    input[type="text"].err { border-color: var(--red); }
+    input[type="text"]::placeholder { color: var(--gray-400); }
+
+    /* Range sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%; height: 4px;
+      border-radius: 2px;
+      background: var(--gray-200);
+      outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 17px; height: 17px;
+      border-radius: 50%;
+      background: var(--navy);
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    .field-slim { margin-bottom: 0.875rem; }
+
+    /* ETA display */
+    .eta-val {
+      padding: 0.6rem 0.75rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 9px;
+      font-size: 0.88rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      background: var(--gray-50);
+    }
+
+    /* ── PRICE BOX ── */
+    .price-box {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: 13px;
+      padding: 1.1rem 1.25rem;
+      color: white;
+      margin-bottom: 1rem;
+    }
+    .price-line { display: flex; justify-content: space-between; font-size: 0.78rem; opacity: 0.7; margin-bottom: 0.2rem; }
+    .price-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 0.5rem; margin-top: 0.4rem;
+    }
+    .price-total-label { font-weight: 600; font-size: 0.9rem; }
+    .price-total-amount { font-size: 1.7rem; font-weight: 700; color: var(--gold); }
+    .price-note { font-size: 0.7rem; opacity: 0.5; margin-top: 0.3rem; }
+
+    /* ── RESTRICTED CHECK ── */
+    .restricted-row {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 9px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .restricted-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--navy); flex-shrink: 0; cursor: pointer; }
+    .restricted-row label { font-size: 0.8rem; color: #92400e; line-height: 1.45; cursor: pointer; }
+    .restricted-row a { color: var(--navy); font-weight: 600; text-decoration: underline; }
+
+    /* ── BOOK BUTTON ── */
+    .btn-book {
+      width: 100%;
+      padding: 0.825rem;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 11px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: all 0.18s;
+    }
+    .btn-book:hover:not(:disabled) { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(245,158,11,0.4); }
+    .btn-book:active:not(:disabled) { transform: translateY(0); }
+    .btn-book:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── REVIEWS ── */
+    .reviews {
+      padding: 5rem 2rem;
+      background: var(--gray-50);
+      overflow: hidden;
+    }
+    .reviews h2 { text-align: center; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+    .reviews .sub { text-align: center; color: var(--gray-600); margin-top: 0.4rem; margin-bottom: 2.5rem; font-size: 0.95rem; }
+    .reviews-wrap { max-width: 1100px; margin: 0 auto; position: relative; }
+    .reviews-overflow { overflow: hidden; }
+    .reviews-track { display: flex; gap: 1.5rem; transition: transform 0.42s cubic-bezier(0.4,0,0.2,1); }
+    .review-card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 1.4rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .stars { color: var(--gold); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .review-text { font-size: 0.875rem; color: var(--gray-600); line-height: 1.6; margin-bottom: 0.6rem; }
+    .review-name { font-weight: 600; font-size: 0.82rem; }
+    .review-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
+    .rdot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-200); border: none; cursor: pointer; transition: background 0.2s; padding: 0; }
+    .rdot.on { background: var(--navy); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy); color: rgba(255,255,255,0.65); padding: 2.5rem 2rem; text-align: center; }
+    .footer-logo { font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.4rem; }
+    .footer-logo span { color: var(--gold); }
+    footer p { font-size: 0.82rem; margin-bottom: 0.2rem; }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── MODAL ── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 18px; padding: 1.75rem;
+      max-width: 520px; width: 100%; max-height: 82vh; overflow-y: auto;
+    }
+    .modal-head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.875rem; }
+    .modal-box h3 { font-size: 1.1rem; }
+    .modal-close { background: var(--gray-100); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 1rem; color: var(--gray-600); flex-shrink: 0; }
+    .modal-box ul { padding-left: 1.2rem; margin: 0.75rem 0; }
+    .modal-box li { font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.3rem; line-height: 1.45; }
+    .modal-warn { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 9px; padding: 0.75rem; font-size: 0.82rem; color: #991b1b; margin-top: 1rem; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--navy); color: white;
+      padding: 0.65rem 1.4rem;
+      border-radius: 100px; font-size: 0.85rem; font-weight: 500;
+      z-index: 9999; transition: transform 0.3s; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 820px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-text { text-align: center; padding-top: 0; }
+      .hero-text p { max-width: 100%; }
+      .hero-badges { justify-content: center; }
+      .row-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" id="navLogo">Man&amp;<span>Van</span></div>
+  <a class="nav-phone" id="navPhone" href="tel:07700900000">📞 07700 900000</a>
+</nav>
+
+<!-- HERO + BOOKING WIDGET -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1 id="heroHeadline">Fast, Reliable<br><span>Weekend Courier</span></h1>
+      <p id="heroSubline">Professional man and van service — every weekend, across the UK. Get an instant quote and secure your slot in minutes.</p>
+      <div class="hero-badges">
+        <span class="badge">✓ Fully Insured</span>
+        <span class="badge">✓ Same-Day Available</span>
+        <span class="badge">✓ 5★ Rated</span>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <h2>Instant Quote &amp; Booking</h2>
+      <p class="subtitle">Choose an available weekend date below</p>
+
+      <!-- CALENDAR -->
+      <div id="cal">
+        <div class="cal-header">
+          <button class="cal-nav" id="calPrev">&#8249;</button>
+          <span class="cal-month-label" id="calLabel"></span>
+          <button class="cal-nav" id="calNext">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span><span class="leg-dot" style="background:var(--navy)"></span>Available</span>
+          <span><span class="leg-dot" style="background:var(--gray-200)"></span>Unavailable (weekday)</span>
+        </div>
+      </div>
+
+      <!-- DETAILS (shown after date pick) -->
+      <div class="booking-details" id="details">
+        <div class="date-pill">
+          <span id="datePillText"></span>
+          <button onclick="clearDate()" title="Change date">✕</button>
+        </div>
+
+        <!-- NAME + EMAIL -->
+        <div class="row-2">
+          <div class="field">
+            <label for="custName">Your Name</label>
+            <input type="text" id="custName" placeholder="Full name" oninput="updateBtn()">
+          </div>
+          <div class="field">
+            <label for="custEmail">Email</label>
+            <input type="text" id="custEmail" placeholder="you@email.com" oninput="updateBtn()">
+          </div>
+        </div>
+
+        <!-- POSTCODES -->
+        <div class="row-2">
+          <div class="field">
+            <label for="pcFrom">📍 Pickup Postcode</label>
+            <input type="text" id="pcFrom" placeholder="e.g. SW1A 1AA" maxlength="8" oninput="scheduleDistLookup()" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="pcTo">📍 Delivery Postcode</label>
+            <input type="text" id="pcTo" placeholder="e.g. M1 1AE" maxlength="8" oninput="scheduleDistLookup()" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- DIMENSIONS -->
+        <div class="row-3">
+          <div class="field">
+            <label for="sLen">Length <span class="val" id="vLen">100 cm</span></label>
+            <input type="range" id="sLen" min="10" value="100" oninput="onSlider()">
+          </div>
+          <div class="field">
+            <label for="sWid">Width <span class="val" id="vWid">80 cm</span></label>
+            <input type="range" id="sWid" min="10" value="80" oninput="onSlider()">
+          </div>
+          <div class="field">
+            <label for="sHgt">Height <span class="val" id="vHgt">80 cm</span></label>
+            <input type="range" id="sHgt" min="10" value="80" oninput="onSlider()">
+          </div>
+        </div>
+
+        <!-- WEIGHT -->
+        <div class="field field-slim">
+          <label for="sWgt">Weight <span class="val" id="vWgt">100 kg</span></label>
+          <input type="range" id="sWgt" min="1" value="100" oninput="onSlider()">
+        </div>
+
+        <!-- PICKUP TIME + ETA -->
+        <div class="row-2" style="margin-bottom:1rem;">
+          <div class="field">
+            <label for="pickTime">⏰ Pickup Time</label>
+            <select id="pickTime" onchange="calcEta()"></select>
+          </div>
+          <div class="field">
+            <label>🚚 Est. Delivery Window</label>
+            <div class="eta-val" id="etaVal">—</div>
+          </div>
+        </div>
+
+        <!-- PRICE -->
+        <div class="price-box">
+          <div class="price-line"><span>Base fee</span><span id="pBase">£0.00</span></div>
+          <div class="price-line"><span id="pDistLabel">Distance charge</span><span id="pDist">—</span></div>
+          <div class="price-total">
+            <span class="price-total-label">Total Estimate</span>
+            <span class="price-total-amount" id="pTotal">—</span>
+          </div>
+          <div class="price-note" id="pNote">Enter both postcodes to see the full quote</div>
+        </div>
+
+        <!-- RESTRICTED CHECKBOX -->
+        <div class="restricted-row">
+          <input type="checkbox" id="restrictedCb" onchange="updateBtn()">
+          <label for="restrictedCb">
+            I confirm my items are <strong>not</strong> on the
+            <a href="#" onclick="openModal(event)">restricted items list</a>
+            and I accept the booking terms.
+          </label>
+        </div>
+
+        <!-- BOOK -->
+        <button class="btn-book" id="btnBook" onclick="doBook()" disabled>
+          Book &amp; Pay →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <h2>What Our Customers Say</h2>
+  <p class="sub">Hundreds of happy customers across the UK</p>
+  <div class="reviews-wrap">
+    <div class="reviews-overflow">
+      <div class="reviews-track" id="rTrack"></div>
+    </div>
+    <div class="review-dots" id="rDots"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo" id="footerLogo">Man&amp;<span>Van</span></div>
+  <p id="footerTagline">Weekend courier service · Fully insured · UK-wide</p>
+  <p style="margin-top:0.5rem;">
+    <a href="#" onclick="openModal(event)">Restricted Items</a>
+    &nbsp;·&nbsp;
+    <a id="footerEmail" href="mailto:bookings@example.co.uk">bookings@example.co.uk</a>
+    &nbsp;·&nbsp;
+    <a id="footerPhone" href="tel:07700900000">07700 900000</a>
+  </p>
+  <p style="margin-top:1rem;font-size:0.72rem;opacity:0.4;">© 2025 Man &amp; Van. All rights reserved.</p>
+</footer>
+
+<!-- RESTRICTED ITEMS MODAL -->
+<div class="modal-bg" id="modal" onclick="modalBgClick(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Restricted Items</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <p style="font-size:0.85rem;color:var(--gray-600);">The following <strong>cannot</strong> be transported:</p>
+    <ul>
+      <li>Hazardous materials — flammable liquids, explosives, radioactive substances</li>
+      <li>Illegal substances or stolen goods</li>
+      <li>Live animals or pets</li>
+      <li>Firearms, ammunition, or weapons of any kind</li>
+      <li>Human remains</li>
+      <li>Perishable food requiring temperature control</li>
+      <li>High-value items over £2,000 without prior written agreement</li>
+      <li>Cash, bank cards, or negotiable instruments</li>
+      <li>Asbestos or toxic materials</li>
+      <li>Items exceeding the van's stated dimension or weight limits</li>
+    </ul>
+    <div class="modal-warn">
+      ⚠️ Knowingly misdeclaring prohibited items may result in cancellation without refund and referral to the relevant authorities.
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================================================
+// ⚙️  CONFIGURATION — edit these values
+// =====================================================
+const C = {
+  // Branding
+  businessName: "Man & Van",
+  phone:        "07700 900000",
+  email:        "bookings@example.co.uk",
+
+  // Pricing (GBP)
+  baseFee:      35,
+  perMile:      1.80,
+  roadFactor:   1.30,   // straight-line → estimated road distance multiplier
+
+  // Van limits (slider max values)
+  maxLenCm:  280,
+  maxWidCm:  160,
+  maxHgtCm:  150,
+  maxWgtKg:  500,
+
+  // Pickup time window (24h integers) + slot interval in minutes
+  windowStart:  7,   // 07:00
+  windowEnd:    17,  // 17:00 (last slot)
+  slotMins:     30,
+
+  // Delivery ETA window (hours added to pickup time)
+  etaMin: 6,
+  etaMax: 12,
+
+  // Stripe
+  // OPTION A — Supabase edge function (dynamic pricing, recommended):
+  checkoutUrl: "https://YOUR_PROJECT.supabase.co/functions/v1/create-checkout",
+  // OPTION B — static Stripe Payment Link fallback (comment out OPTION A above):
+  paymentLink: "https://buy.stripe.com/REPLACE_ME",
+
+  // Reviews
+  reviews: [
+    { name: "Sarah M.",  stars: 5, text: "Brilliant service! Collected my sofa same day and delivered it 200 miles away without a scratch. Couldn't recommend highly enough." },
+    { name: "James T.",  stars: 5, text: "Punctual, professional and incredibly careful with my belongings. Great communication throughout. Will definitely book again." },
+    { name: "Rachel K.", stars: 5, text: "Fantastic value. Much cheaper than the big removal firms and a much more personal, attentive service. 10 out of 10." },
+    { name: "David P.",  stars: 4, text: "Really great experience. The online booking tool was dead simple and the driver was very helpful loading everything up." },
+    { name: "Emma W.",   stars: 5, text: "Used this for an eBay collection pickup — seamless from start to finish. Communication was excellent throughout." },
+    { name: "Mark S.",   stars: 5, text: "Second time using this service. Reliable, friendly and excellent value. Won't be going anywhere else for weekend deliveries." },
+  ],
+};
+
+// =====================================================
+// Apply config to DOM text nodes
+// =====================================================
+(function applyConfig() {
+  document.getElementById('navLogo').innerHTML   = `${C.businessName.split(' ')[0]}&amp;<span style="color:var(--gold)">${C.businessName.split(' ')[1]||''}</span>`;
+  document.getElementById('navPhone').href        = `tel:${C.phone.replace(/\s/g,'')}`;
+  document.getElementById('navPhone').textContent = `📞 ${C.phone}`;
+  document.getElementById('footerLogo').innerHTML = `${C.businessName.split(' ')[0]}&amp;<span style="color:var(--gold)">${C.businessName.split(' ')[1]||''}</span>`;
+  document.getElementById('footerEmail').href        = `mailto:${C.email}`;
+  document.getElementById('footerEmail').textContent = C.email;
+  document.getElementById('footerPhone').href        = `tel:${C.phone.replace(/\s/g,'')}`;
+  document.getElementById('footerPhone').textContent = C.phone;
+
+  // Slider maxes from config
+  document.getElementById('sLen').max = C.maxLenCm;
+  document.getElementById('sWid').max = C.maxWidCm;
+  document.getElementById('sHgt').max = C.maxHgtCm;
+  document.getElementById('sWgt').max = C.maxWgtKg;
+})();
+
+// =====================================================
+// CALENDAR
+// =====================================================
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let calY, calM, selDate = null;
+
+function initCal() {
+  const now = new Date();
+  calY = now.getFullYear();
+  calM = now.getMonth();
+  renderCal();
+}
+
+function renderCal() {
+  document.getElementById('calLabel').textContent = `${MONTHS[calM]} ${calY}`;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const first  = new Date(calY, calM, 1);
+  let   startDow = (first.getDay() + 6) % 7; // Mon=0
+  const days   = new Date(calY, calM + 1, 0).getDate();
+
+  const HEADERS = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  let html = HEADERS.map(d => `<div class="cal-dh">${d}</div>`).join('');
+
+  for (let i = 0; i < startDow; i++) html += `<div class="cal-day"></div>`;
+
+  for (let d = 1; d <= days; d++) {
+    const dt  = new Date(calY, calM, d);
+    const dow = dt.getDay(); // 0=Sun, 6=Sat
+    const isWeekend = dow === 0 || dow === 6;
+    const isPast    = dt < today;
+    const isSel     = selDate && dt.toDateString() === selDate.toDateString();
+
+    let cls = 'cal-day';
+    let inner = String(d);
+    if (isPast) {
+      cls += ' past';
+    } else if (isWeekend) {
+      cls += isSel ? ' sel' : ' avail';
+    } else {
+      cls += ' unavail';
+      inner = `${d}<br><span style="font-size:0.6rem">full</span>`;
+    }
+    const click = (!isPast && isWeekend) ? `onclick="pickDate(${calY},${calM},${d})"` : '';
+    html += `<div class="${cls}" ${click}>${inner}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function pickDate(y, m, d) {
+  selDate = new Date(y, m, d);
+  renderCal();
+  const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+  document.getElementById('datePillText').textContent = selDate.toLocaleDateString('en-GB', opts);
+  document.getElementById('details').classList.add('show');
+  calcEta(); updateBtn();
+}
+
+function clearDate() {
+  selDate = null;
+  renderCal();
+  document.getElementById('details').classList.remove('show');
+}
+
+document.getElementById('calPrev').onclick = () => { calM--; if (calM < 0) { calM=11; calY--; } renderCal(); };
+document.getElementById('calNext').onclick = () => { calM++; if (calM > 11) { calM=0; calY++; } renderCal(); };
+
+// =====================================================
+// TIME PICKER + ETA
+// =====================================================
+function initTimes() {
+  const sel = document.getElementById('pickTime');
+  for (let h = C.windowStart; h <= C.windowEnd; h++) {
+    for (let m = 0; m < 60; m += C.slotMins) {
+      if (h === C.windowEnd && m > 0) break;
+      const lbl = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      const opt = document.createElement('option');
+      opt.value = h * 60 + m;
+      opt.textContent = lbl;
+      sel.appendChild(opt);
+    }
+  }
+}
+
+function calcEta() {
+  const mins = parseInt(document.getElementById('pickTime').value);
+  const fmtMins = n => {
+    const extra = n >= 1440 ? ' (+1d)' : '';
+    return `${String(Math.floor(n % 1440 / 60)).padStart(2,'0')}:${String(n % 60).padStart(2,'0')}${extra}`;
+  };
+  document.getElementById('etaVal').textContent =
+    `${fmtMins(mins + C.etaMin * 60)} – ${fmtMins(mins + C.etaMax * 60)}`;
+}
+
+// =====================================================
+// SLIDERS
+// =====================================================
+function onSlider() {
+  const fill = el => {
+    const pct = (el.value - el.min) / (el.max - el.min) * 100;
+    el.style.background = `linear-gradient(to right,var(--navy) ${pct}%,var(--gray-200) ${pct}%)`;
+  };
+  const sLen = document.getElementById('sLen');
+  const sWid = document.getElementById('sWid');
+  const sHgt = document.getElementById('sHgt');
+  const sWgt = document.getElementById('sWgt');
+  [sLen, sWid, sHgt, sWgt].forEach(fill);
+  document.getElementById('vLen').textContent = sLen.value + ' cm';
+  document.getElementById('vWid').textContent = sWid.value + ' cm';
+  document.getElementById('vHgt').textContent = sHgt.value + ' cm';
+  document.getElementById('vWgt').textContent = sWgt.value + ' kg';
+  updateBtn();
+}
+
+// =====================================================
+// POSTCODE → DISTANCE → PRICE
+// =====================================================
+let distMiles = null;
+let distTimer  = null;
+
+function scheduleDistLookup() {
+  distMiles = null;
+  updatePrice(null);
+  clearTimeout(distTimer);
+  distTimer = setTimeout(lookupDist, 900);
+}
+
+async function fetchLatLng(pc) {
+  const r = await fetch(`https://api.postcodes.io/postcodes/${pc.replace(/\s/g,'').toUpperCase()}`);
+  if (!r.ok) return null;
+  const j = await r.json();
+  return j.status === 200 ? { lat: j.result.latitude, lng: j.result.longitude } : null;
+}
+
+function haversine(a, b) {
+  const R = 3958.8, rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat/2)**2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.asin(Math.sqrt(h));
+}
+
+async function lookupDist() {
+  const a = document.getElementById('pcFrom').value.trim();
+  const b = document.getElementById('pcTo').value.trim();
+  if (a.length < 5 || b.length < 5) return;
+  try {
+    const [A, B] = await Promise.all([fetchLatLng(a), fetchLatLng(b)]);
+    if (!A || !B) { toast('Postcode not found — please double-check'); return; }
+    distMiles = haversine(A, B) * C.roadFactor;
+    document.getElementById('pcFrom').classList.add('ok');
+    document.getElementById('pcTo').classList.add('ok');
+    updatePrice(distMiles);
+  } catch { toast('Could not look up postcodes — check your connection'); }
+}
+
+function updatePrice(miles) {
+  const base = C.baseFee;
+  document.getElementById('pBase').textContent = `£${base.toFixed(2)}`;
+  if (miles !== null && miles > 0) {
+    const distCost = miles * C.perMile;
+    document.getElementById('pDistLabel').textContent = `Distance (${miles.toFixed(1)} mi est.)`;
+    document.getElementById('pDist').textContent      = `£${distCost.toFixed(2)}`;
+    document.getElementById('pTotal').textContent     = `£${(base + distCost).toFixed(2)}`;
+    document.getElementById('pNote').textContent      = 'Road distance estimated from postcode coordinates (±10%)';
+  } else {
+    document.getElementById('pDistLabel').textContent = 'Distance charge';
+    document.getElementById('pDist').textContent      = '—';
+    document.getElementById('pTotal').textContent     = `£${base.toFixed(2)}+`;
+    document.getElementById('pNote').textContent      = 'Enter both postcodes to see the full quote';
+  }
+  updateBtn();
+}
+
+// =====================================================
+// BOOK BUTTON GUARD
+// =====================================================
+function updateBtn() {
+  const ok = selDate !== null
+    && distMiles !== null
+    && document.getElementById('custName').value.trim().length > 1
+    && document.getElementById('custEmail').value.includes('@')
+    && document.getElementById('restrictedCb').checked;
+  document.getElementById('btnBook').disabled = !ok;
+}
+
+// =====================================================
+// STRIPE CHECKOUT
+// =====================================================
+async function doBook() {
+  const btn = document.getElementById('btnBook');
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to payment…';
+
+  const pickTime = document.getElementById('pickTime');
+  const total = distMiles
+    ? (C.baseFee + distMiles * C.perMile).toFixed(2)
+    : C.baseFee.toFixed(2);
+
+  const payload = {
+    customerName:     document.getElementById('custName').value.trim(),
+    customerEmail:    document.getElementById('custEmail').value.trim(),
+    bookingDate:      selDate.toISOString().split('T')[0],
+    pickupPostcode:   document.getElementById('pcFrom').value.trim().toUpperCase(),
+    deliveryPostcode: document.getElementById('pcTo').value.trim().toUpperCase(),
+    pickupTime:       pickTime.options[pickTime.selectedIndex].text,
+    etaWindow:        document.getElementById('etaVal').textContent,
+    dimensions: {
+      lengthCm: document.getElementById('sLen').value,
+      widthCm:  document.getElementById('sWid').value,
+      heightCm: document.getElementById('sHgt').value,
+    },
+    weightKg:       document.getElementById('sWgt').value,
+    distanceMiles:  distMiles ? distMiles.toFixed(1) : null,
+    totalGBP:       total,
+    // Full base URL so the edge function can build correct success/cancel URLs
+    // even when the site lives at a subpath (e.g. username.github.io/manvan/).
+    siteUrl: window.location.origin +
+             window.location.pathname.split('/').slice(0, -1).join('/'),
+  };
+
+  try {
+    // OPTION A — Dynamic pricing via Supabase edge function
+    if (!C.checkoutUrl.includes('YOUR_PROJECT')) {
+      const res = await fetch(C.checkoutUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const { url, error } = await res.json();
+      if (error) throw new Error(error);
+      window.location.href = url;
+      return;
+    }
+    // OPTION B — Static payment link fallback
+    if (!C.paymentLink.includes('REPLACE_ME')) {
+      window.location.href = C.paymentLink;
+      return;
+    }
+    toast('Payment not yet configured — see DEPLOYMENT.md');
+  } catch (e) {
+    toast('Could not start payment. Please call us directly.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Book & Pay →';
+    updateBtn();
+  }
+}
+
+// =====================================================
+// REVIEWS CAROUSEL
+// =====================================================
+let rIdx = 0, rAutoTimer;
+
+function initReviews() {
+  const track = document.getElementById('rTrack');
+  track.innerHTML = C.reviews.map(r => `
+    <div class="review-card">
+      <div class="stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+      <p class="review-text">"${r.text}"</p>
+      <div class="review-name">— ${r.name}</div>
+    </div>
+  `).join('');
+
+  const dots = document.getElementById('rDots');
+  dots.innerHTML = C.reviews.map((_,i) =>
+    `<button class="rdot ${i===0?'on':''}" onclick="goReview(${i})"></button>`
+  ).join('');
+
+  setCardWidths();
+  startAuto();
+  window.addEventListener('resize', () => { setCardWidths(); goReview(rIdx); });
+}
+
+function cardsVisible() {
+  return window.innerWidth <= 640 ? 1 : window.innerWidth <= 900 ? 2 : 3;
+}
+
+function setCardWidths() {
+  const wrap = document.querySelector('.reviews-overflow');
+  const n    = cardsVisible();
+  const gap  = 24;
+  const w    = (wrap.offsetWidth - gap * (n - 1)) / n;
+  document.querySelectorAll('.review-card').forEach(c => { c.style.width = w + 'px'; c.style.minWidth = w + 'px'; });
+}
+
+function goReview(i) {
+  rIdx = Math.max(0, Math.min(i, C.reviews.length - cardsVisible()));
+  const card = document.querySelector('.review-card');
+  if (!card) return;
+  const step = card.offsetWidth + 24;
+  document.getElementById('rTrack').style.transform = `translateX(-${rIdx * step}px)`;
+  document.querySelectorAll('.rdot').forEach((d, j) => d.classList.toggle('on', j === rIdx));
+}
+
+function startAuto() {
+  clearInterval(rAutoTimer);
+  rAutoTimer = setInterval(() => {
+    const next = rIdx + 1 >= C.reviews.length - cardsVisible() + 1 ? 0 : rIdx + 1;
+    goReview(next);
+  }, 4500);
+}
+
+// =====================================================
+// MODAL
+// =====================================================
+function openModal(e) { e && e.preventDefault(); document.getElementById('modal').classList.add('open'); }
+function closeModal()  { document.getElementById('modal').classList.remove('open'); }
+function modalBgClick(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+// =====================================================
+// TOAST
+// =====================================================
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// =====================================================
+// BOOT
+// =====================================================
+initCal();
+initTimes();
+initReviews();
+onSlider();    // init slider fills
+calcEta();
+updatePrice(null);
+</script>
+</body>
+</html>
