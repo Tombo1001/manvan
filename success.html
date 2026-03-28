@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking Confirmed</title>
+  <style>
+    body { font-family: sans-serif; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; background: #f8fafc; margin: 0; }
+    .card { background: white; border-radius: 16px; padding: 2.5rem; text-align: center;
+            max-width: 440px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    h1 { color: #0f172a; margin-top: .5rem; }
+    p { color: #475569; margin-top: .5rem; line-height: 1.6; }
+    a { color: #f59e0b; font-weight: 600; text-decoration: none; }
+    .ref {
+      margin: 1.5rem 0 0;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 0.875rem 1rem;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .ref strong { display: block; font-size: 1rem; color: #0f172a; margin-top: 0.25rem;
+                  letter-spacing: 0.03em; word-break: break-all; }
+    .actions { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+    .btn-print {
+      background: #0f172a; color: white; border: none; border-radius: 9px;
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-print:hover { background: #1e293b; }
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; }
+      .actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="font-size:3rem">✅</div>
+    <h1>You're booked!</h1>
+    <p>Payment received. We'll be in touch to confirm the details.</p>
+    <div class="ref">
+      Booking reference
+      <strong id="ref">—</strong>
+    </div>
+    <div class="actions">
+      <button class="btn-print" onclick="window.print()">🖨 Print confirmation</button>
+    </div>
+    <p style="margin-top:1.5rem"><a href="/">← Back to home</a></p>
+  </div>
+  <script>
+    const session = new URLSearchParams(window.location.search).get('session');
+    if (session) document.getElementById('ref').textContent = session;
+  </script>
+</body>
+</html>
