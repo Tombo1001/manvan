@@ -29,14 +29,32 @@ die()     { echo -e "${RED}✗  $*${NC}"; exit 1; }
 # ── 1. Supabase CLI ───────────────────────────────────────────────────────────
 heading "Step 1 — Supabase CLI"
 
+# /usr/local/bin may not be in PATH on all WSL2 setups — ensure it is.
+export PATH="/usr/local/bin:$PATH"
+
 if ! command -v supabase &>/dev/null; then
-  warn "Supabase CLI not found. Installing via npm..."
-  if command -v npm &>/dev/null; then
-    npm install -g supabase
-  elif command -v brew &>/dev/null; then
+  warn "Supabase CLI not found. Installing..."
+  if command -v brew &>/dev/null; then
     brew install supabase/tap/supabase
   else
-    die "Neither npm nor Homebrew found. Install the Supabase CLI manually:\n  https://supabase.com/docs/guides/cli/getting-started"
+    # Linux / WSL2 — download the binary from GitHub releases
+    ARCH=$(uname -m)
+    case "$ARCH" in
+      x86_64)  ARCH_LABEL="amd64" ;;
+      aarch64) ARCH_LABEL="arm64" ;;
+      *)       die "Unsupported architecture: $ARCH — install the Supabase CLI manually:\n  https://supabase.com/docs/guides/cli/getting-started" ;;
+    esac
+    SUPA_URL="https://github.com/supabase/cli/releases/latest/download/supabase_linux_${ARCH_LABEL}.tar.gz"
+    info "Downloading Supabase CLI from GitHub releases..."
+    INSTALL_TMP=$(mktemp -d)
+    curl -fsSL "$SUPA_URL" | tar -xz -C "$INSTALL_TMP"
+    [[ ! -f "$INSTALL_TMP/supabase" ]] && die "Supabase binary not found in downloaded archive."
+    # Remove any previous install (guards against a directory being in the way)
+    [[ -e /usr/local/bin/supabase ]] && sudo rm -rf /usr/local/bin/supabase
+    sudo mv "$INSTALL_TMP/supabase" /usr/local/bin/supabase
+    sudo chmod +x /usr/local/bin/supabase
+    rm -rf "$INSTALL_TMP"
+    info "Supabase CLI installed to /usr/local/bin/supabase"
   fi
 fi
 
